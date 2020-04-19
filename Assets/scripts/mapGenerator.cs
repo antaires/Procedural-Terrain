@@ -7,7 +7,7 @@ public class mapGenerator : MonoBehaviour {
     public enum DrawMode { NoiseMap, ColorMap, DrawMesh };
     public DrawMode drawMode;
 
-    const int mapChunkSize = 241;
+    public const int mapChunkSize = 241;
     [Range(0, 6)]
     public int levelOfDetail; // 1 if no simplification, and 2, 4, 6....12 for increaseing simplification
     public int seed;

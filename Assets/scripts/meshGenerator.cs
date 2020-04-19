@@ -2,70 +2,63 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(MeshFilter))]
-public class meshGenerator : MonoBehaviour {
+public static class MeshGenerator {
 
-    Mesh mesh; // store mesh
+    public static MeshData GenerateTerrainMesh(float[,] heightMap){
+        int width = heightMap.GetLength(0);
+        int height = heightMap.GetLength(1);
+        float topLeftX = (width - 1) / -2f;
+        float topLeftZ = (height - 1) / 2f;
 
-    Vector3[] vertices;
-    int[] triangles;
+        MeshData meshData = new MeshData(width, height);
+        int vertexIndex = 0;
 
-    public int xSize = 20;
-    public int zSize = 20;
+        for (int y = 0; y < height; y++){
+            for (int x = 0; x < width; x++){
 
-	// Use this for initialization
-	void Start () {
-        mesh = new Mesh();
-        GetComponent<MeshFilter>().mesh = mesh;
-        CreateShape();
-        UpdateMesh();
-	}
+                meshData.vertices[vertexIndex] = new Vector3(topLeftX + x, heightMap[x, y], topLeftZ - y);
+                meshData.uvs[vertexIndex] = new Vector2(x / (float)width, y / (float) height);
 
-    void CreateShape(){
-        // specify elements in array - grid
-        vertices = new Vector3[(xSize + 1) * (zSize + 1)];
-        for (int i = 0, z = 0; z <= zSize; z++){
-            for (int x = 0; x <= xSize; x++){
-                float y = Mathf.PerlinNoise(x * 0.3f, z * 0.3f) * 2.0f;
-                vertices[i] = new Vector3(x, y, z);
-                i++;
+                if (x < width-1 && y < height-1){ // ignore right and bottom edges of map
+                    meshData.AddTriangle(vertexIndex, vertexIndex + width + 1, vertexIndex + width);
+                    meshData.AddTriangle(vertexIndex + width + 1, vertexIndex, vertexIndex + 1);
+                }
+
+                vertexIndex++;
             }
         }
 
-        // draw the triangles
-        int vert = 0;
-        int tris = 0;
-        triangles = new int[xSize * zSize * 6];
-        for (int z = 0; z < zSize; z++){
-            for (int x = 0; x < xSize; x++){
-                triangles[tris + 0] = vert + 0;
-                triangles[tris + 1] = vert + xSize + 1;
-                triangles[tris + 2] = vert + 1;
-
-                triangles[tris + 3] = vert + 1;
-                triangles[tris + 4] = vert + xSize + 1;
-                triangles[tris + 5] = vert + xSize + 2;
-
-                vert++;
-                tris += 6;
-            }
-            vert++; // prevent triangles wrapping around
-        }
+        return meshData;
     }
 
-    void UpdateMesh(){
-        mesh.Clear();
+}
 
+public class MeshData{
+    public Vector3[] vertices;
+    public int[] triangles;
+    int triangleIndex;
+    public Vector2[] uvs;
+
+    public MeshData(int meshWidth, int meshHeight){
+        vertices = new Vector3[meshWidth * meshHeight];
+        triangles = new int[(meshWidth - 1) * (meshHeight - 1) * 6];
+        uvs = new Vector2[meshWidth * meshHeight];
+        triangleIndex = 0;
+    }
+
+    public void AddTriangle(int a, int b, int c){
+        triangles[triangleIndex] = a;
+        triangles[triangleIndex+1] = b;
+        triangles[triangleIndex+2] = c;
+        triangleIndex += 3;
+    }
+
+    public Mesh CreateMesh(){
+        Mesh mesh = new Mesh();
         mesh.vertices = vertices;
         mesh.triangles = triangles;
-
-        mesh.RecalculateNormals();
-    }
-
-    private void OnDrawGizmos(){
-        if (vertices == null) { return; }
-        for (int i = 0; i < vertices.Length; ++i){
-            Gizmos.DrawSphere(vertices[i], 0.20f);
-        }
+        mesh.uv = uvs;
+        mesh.RecalculateNormals(); // assure lighting works correctly
+        return mesh;
     }
 }

@@ -321,13 +321,13 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 534669902}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalRotation: {x: 0.27415353, y: -0, z: -0, w: 0.96168596}
+  m_LocalPosition: {x: 0, y: 382, z: -712}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 31.823002, y: 0, z: 0}
 --- !u!1 &1779497754
 GameObject:
   m_ObjectHideFlags: 0
@@ -356,10 +356,44 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84405401c4ef84d53a70dcd8f2602deb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  drawMode: 1
   mapWidth: 100
   mapHeight: 100
-  noiseScale: 10
+  seed: 5
+  noiseScale: 25
+  octaves: 4
+  persistance: 0.53
+  lacunarity: 1.97
+  scrollOffset: {x: 0.52, y: 0.4}
   autoUpdate: 1
+  regions:
+  - name: waterDeep
+    height: 0.3
+    color: {r: 0, g: 0.3004087, b: 0.6415094, a: 0}
+  - name: waterShallow
+    height: 0.4
+    color: {r: 0.009478444, g: 0.3760407, b: 0.6698113, a: 0}
+  - name: lightSand
+    height: 0.44
+    color: {r: 0.9150943, g: 0.8621826, b: 0.5050285, a: 0}
+  - name: sand
+    height: 0.45
+    color: {r: 0.8584906, g: 0.72699565, b: 0.21462265, a: 0}
+  - name: grassLight
+    height: 0.55
+    color: {r: 0.5985588, g: 0.8117647, b: 0.30196083, a: 0}
+  - name: grassDark
+    height: 0.6
+    color: {r: 0.28294244, g: 0.5283019, b: 0.12709148, a: 0}
+  - name: dirtLight
+    height: 0.7
+    color: {r: 0.5188679, g: 0.32647032, b: 0.20803666, a: 0}
+  - name: dirtDark
+    height: 0.9
+    color: {r: 0.3490566, g: 0.1742117, b: 0.09385012, a: 0}
+  - name: snow
+    height: 1
+    color: {r: 0.74759704, g: 0.86303496, b: 0.9056604, a: 0}
 --- !u!4 &1779497756
 Transform:
   m_ObjectHideFlags: 0

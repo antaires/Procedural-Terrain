@@ -11,14 +11,13 @@ public class mapGenerator : MonoBehaviour {
     public int mapHeight;
     public int seed; 
     public float noiseScale;
-
     public int octaves;
     [Range(0, 1)]
     public float persistance;
     public float lacunarity;
-
+    public float meshHightMultiplier;
+    public AnimationCurve meshHeightCurve; // allow user to specify how much the multiplier effects diff regions
     public Vector2 scrollOffset;
-
     public bool autoUpdate;
 
     public TerrainType[] regions;
@@ -47,7 +46,7 @@ public class mapGenerator : MonoBehaviour {
         }  else if (drawMode == DrawMode.ColorMap){
             display.DrawTexture(TextureGenerator.TextureFromColorMap(colorMap, mapWidth, mapHeight));
         } else if (drawMode == DrawMode.DrawMesh){
-            display.DrawMesh(MeshGenerator.GenerateTerrainMesh(noiseMap), TextureGenerator.TextureFromColorMap(colorMap, mapWidth, mapHeight));
+            display.DrawMesh(MeshGenerator.GenerateTerrainMesh(noiseMap, meshHightMultiplier, meshHeightCurve), TextureGenerator.TextureFromColorMap(colorMap, mapWidth, mapHeight));
         }
 
     }

@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public static class MeshGenerator {
-
-    public static MeshData GenerateTerrainMesh(float[,] heightMap, float heightMapMultiplier, AnimationCurve heightCurve, int levelOfDetail){
+    
+    public static MeshData GenerateTerrainMesh(float[,] heightMap, float heightMapMultiplier, AnimationCurve heightCurve_, int levelOfDetail){
+        AnimationCurve heightCurve = new AnimationCurve(heightCurve_.keys); // prevent multiple threads accessing same height curve
         int width = heightMap.GetLength(0);
         int height = heightMap.GetLength(1);
         float topLeftX = (width - 1) / -2f;

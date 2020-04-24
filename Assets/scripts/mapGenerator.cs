@@ -9,6 +9,8 @@ public class mapGenerator : MonoBehaviour {
     public enum DrawMode { NoiseMap, ColorMap, DrawMesh };
     public DrawMode drawMode;
 
+    public Noise.NormalizeMode normalizeMode;
+
     public const int mapChunkSize = 241; // dimensions of mesh are actually 240 x 240
     [Range(0, 6)]
     public int editorPreviewLevelOfDetail; // 1 if no simplification, and 2, 4, 6....12 for increaseing simplification
@@ -87,15 +89,16 @@ public class mapGenerator : MonoBehaviour {
 
     MapData GenerateMapData(Vector2 center){
         // fetch 2d noise map
-        float[,] noiseMap = Noise.GenerateNoiseMap(mapChunkSize, mapChunkSize, seed, noiseScale, octaves, persistance, lacunarity, center + scrollOffset);
+        float[,] noiseMap = Noise.GenerateNoiseMap(mapChunkSize, mapChunkSize, seed, noiseScale, octaves, persistance, lacunarity, center + scrollOffset, normalizeMode);
         Color[] colorMap = new Color[mapChunkSize * mapChunkSize];
         for (int y = 0; y < mapChunkSize; y++){
             for (int x = 0; x < mapChunkSize; x++){
                 float currentHeight = noiseMap[x, y];
                 // loop over regions and find which region fits
                 for (int i = 0; i < regions.Length; i++){
-                    if (currentHeight <= regions[i].height){
+                    if (currentHeight >= regions[i].height){
                         colorMap[y * mapChunkSize + x] = regions[i].color;
+                    } else {
                         break; // move on to next
                     }
                 }

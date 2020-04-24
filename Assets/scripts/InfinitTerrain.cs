@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class InfinitTerrain : MonoBehaviour {
 
+    const float scale = 1f;
+
     const float viewerMoveThresholdForChunkUpdate = 25f;
     const float sqrViewerMoveThresholdForChunkUpdate = viewerMoveThresholdForChunkUpdate * viewerMoveThresholdForChunkUpdate;
 
@@ -21,7 +23,7 @@ public class InfinitTerrain : MonoBehaviour {
     int chunksVisibleInViewDistance;
 
     Dictionary<Vector2, TerrainChunk> terrainChunkDictionary = new Dictionary<Vector2, TerrainChunk>();
-    List<TerrainChunk> terrainChunksVisibleLastUpdate = new List<TerrainChunk>(); // to disable chunks that are no longer visible
+    static List<TerrainChunk> terrainChunksVisibleLastUpdate = new List<TerrainChunk>(); // to disable chunks that are no longer visible
 
     private void Start(){
         mapGenerator = FindObjectOfType<mapGenerator>();
@@ -34,7 +36,7 @@ public class InfinitTerrain : MonoBehaviour {
     }
 
     private void Update(){
-        viewerPosition = new Vector2(viewer.position.x, viewer.position.z);
+        viewerPosition = new Vector2(viewer.position.x, viewer.position.z) / scale;
 
         if( (viewerPositionOld - viewerPosition).sqrMagnitude > sqrViewerMoveThresholdForChunkUpdate){
             // only update if player moves enough
@@ -63,10 +65,6 @@ public class InfinitTerrain : MonoBehaviour {
                 if (terrainChunkDictionary.ContainsKey(viewedChunkCoord)){
                     // update
                     terrainChunkDictionary[viewedChunkCoord].UpdateTerrainChunk();
-                    // store if visible
-                    if (terrainChunkDictionary[viewedChunkCoord].IsVisible()){
-                        terrainChunksVisibleLastUpdate.Add(terrainChunkDictionary[viewedChunkCoord]);
-                    }
                 } else {
                     // create new chunk
                     terrainChunkDictionary.Add(viewedChunkCoord, new TerrainChunk(viewedChunkCoord, chunkSize, detailLevels, transform, mapMaterial));
@@ -101,8 +99,9 @@ public class InfinitTerrain : MonoBehaviour {
             meshFilter = meshObject.AddComponent<MeshFilter>();
             meshRenderer.material = material;
 
-            meshObject.transform.position = positionV3;
+            meshObject.transform.position = positionV3 * scale;
             meshObject.transform.parent = parent;
+            meshObject.transform.localScale = Vector3.one * scale;
             SetVisible(false);
 
             lODMeshes = new LODMesh[detailLevels.Length];
@@ -150,6 +149,10 @@ public class InfinitTerrain : MonoBehaviour {
                             lODMesh.RequestMesh(mapData);
                         }
                     }
+
+                    // add itself to visible list 
+                    terrainChunksVisibleLastUpdate.Add(this);
+
                 }
                 SetVisible(visible);
             }

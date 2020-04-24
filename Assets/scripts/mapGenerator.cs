@@ -11,7 +11,7 @@ public class mapGenerator : MonoBehaviour {
 
     public Noise.NormalizeMode normalizeMode;
 
-    public const int mapChunkSize = 241; // dimensions of mesh are actually 240 x 240
+    public const int mapChunkSize = 239; // dimensions of mesh are actually 240 x 240
     [Range(0, 6)]
     public int editorPreviewLevelOfDetail; // 1 if no simplification, and 2, 4, 6....12 for increaseing simplification
     public int seed;
@@ -100,7 +100,7 @@ public class mapGenerator : MonoBehaviour {
 
     MapData GenerateMapData(Vector2 center){
         // fetch 2d noise map
-        float[,] noiseMap = Noise.GenerateNoiseMap(mapChunkSize, mapChunkSize, seed, noiseScale, octaves, persistance, lacunarity, center + scrollOffset, normalizeMode);
+        float[,] noiseMap = Noise.GenerateNoiseMap(mapChunkSize + 2, mapChunkSize + 2, seed, noiseScale, octaves, persistance, lacunarity, center + scrollOffset, normalizeMode);
         Color[] colorMap = new Color[mapChunkSize * mapChunkSize];
         for (int y = 0; y < mapChunkSize; y++){
             for (int x = 0; x < mapChunkSize; x++){
